@@ -7,7 +7,7 @@ struct list_node{
 };
 
 struct list{
-	struct list_node *first,*list;
+	struct list_node *first,*last;
 };
 
 void list_node_init(struct list_node *n, int v){ n->value = v; }
@@ -16,19 +16,21 @@ struct list_node *list_begin(struct list *l){ return l->first; }
 struct list_node *list_end(struct list *l){ return NULL; }
 
 void list_init(struct list *l){ l->first = NULL; l->last = NULL; }
+
 void list_insert(struct list *l, struct list_node *where, int v){
 	struct list_node *newnode = (struct list_node*)malloc(sizeof(*newnode));
 	list_node_init(newnode,v);
-	newnode->prev = where ? where->prev : 1->last;		//If null attach to end of list else attach to end of where
+	newnode->prev = where ? where->prev : l->last; 
 	newnode->next = where;
 	if(newnode->prev) newnode->prev->next = newnode;
 	if(where) where->prev = newnode;
+	if(where == l->first) l->first = newnode;
 	if(!where) l->last = newnode;
 }
 
 void list_push_front(struct list* l, int v){ list_insert(l,list_begin(l),v); }
 void list_push_back(struct list* l, int v){ list_insert(l,list_end(l),v); }
-void list_erase(struct list* l, stuct list_node *where){
+void list_erase(struct list* l, struct list_node *where){
 	struct list_node* prev = where->prev;
 	struct list_node* next = where->next;
 	if(prev) prev->next = next;
@@ -51,7 +53,7 @@ int main(void){
 	list_push_front(&mylist,8);
 	list_push_front(&mylist,3);
 
-	for(i = list_begin(&mylist); i != list_end(&mylist); i = list_advance(i)))
+	for(i = list_begin(&mylist); i != list_end(&mylist); i = list_advance(i))
 		printf("%d ", i->value);
 	printf("\n");	
 	
