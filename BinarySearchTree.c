@@ -8,18 +8,6 @@ struct tree_node{
 	int value;
 };
 
-struct tree{
-	struct tree_node *root;
-	int num_nodes;
-};
-
-void tree_node_init(struct tree_node *n, int v) { n->value = v; }
-void tree_init(struct tree *t){ t->root = NULL; t->num_nodes = 0; }
-void tree_insert(struct tree *t, struct tree_node *i){
-
-
-}
-
 struct tree_node* new_node(int v){
 	struct tree_node *temp = (struct tree_node*)malloc(sizeof(*temp));
 	if(temp == NULL){ printf("Unable to allocate Memory!\n"); exit(0); }
@@ -29,17 +17,21 @@ struct tree_node* new_node(int v){
 	return temp;
 }
 
+void tree_insert(struct tree_node *n, int v){
+	if(n == NULL)
+		n = new_node(v);
+	else if(v < n->value)
+		tree_insert(n->left,v);
+	else if(v > n->value)
+		tree_insert(n->right,v);	
+}
+
 //Post Order erase of tree node and children
 void tree_erase(struct tree_node *t){
 	if(t == NULL) return;
 	tree_erase(t->left);
 	tree_erase(t->right);
 	free(t);
-}
-
-void tree_clear(struct tree *t){
-	tree_erase(t->root);
-	t->num_nodes = 0;
 }
 
 void traverse(struct tree_node *t, TraversalOrder TO){
@@ -63,5 +55,12 @@ void traverse(struct tree_node *t, TraversalOrder TO){
 }
 
 int main(int argc, char *argv[]){
+	struct tree_node *t = NULL;
+	tree_insert(t,5);
+	tree_insert(t,3);
+	tree_insert(t,1);
+	tree_insert(t,4);
+	tree_insert(t,6);
+	traverse(t,1);
 	return 0;
 }
